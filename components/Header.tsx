@@ -1,6 +1,6 @@
 'use client'
 
-import { RefreshCw, Zap } from 'lucide-react'
+import { RefreshCw, Activity } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 interface HeaderProps {
@@ -22,7 +22,7 @@ export function Header({ onRefresh, isLoading, lastUpdated }: HeaderProps) {
       <div className="container mx-auto px-4 py-4 max-w-7xl flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary text-primary-foreground">
-            <Zap className="w-5 h-5" />
+            <Activity className="w-5 h-5" />
           </div>
           <div>
             <h1 className="text-xl font-bold tracking-tight">AI Pulse</h1>

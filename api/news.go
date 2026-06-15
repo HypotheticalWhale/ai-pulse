@@ -56,12 +56,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	from := time.Now().UTC().AddDate(0, 0, -3).Format("2006-01-02")
+	from := time.Now().UTC().AddDate(0, 0, -7).Format("2006-01-02")
 	query := url.QueryEscape(
-		"artificial intelligence OR machine learning OR large language model OR LLM OR generative AI OR OpenAI OR Anthropic OR Google Gemini OR AI model",
+		"artificial intelligence OR machine learning OR large language model OR LLM OR generative AI OR OpenAI OR Anthropic OR Google Gemini OR AI model OR deep learning OR neural network OR AI safety OR AI regulation OR GPT OR Claude OR Mistral OR Llama",
 	)
 	apiURL := fmt.Sprintf(
-		"https://newsapi.org/v2/everything?q=%s&language=en&sortBy=publishedAt&from=%s&pageSize=30&apiKey=%s",
+		"https://newsapi.org/v2/everything?q=%s&language=en&sortBy=publishedAt&from=%s&pageSize=100&apiKey=%s",
 		query, from, apiKey,
 	)
 
