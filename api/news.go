@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -94,12 +95,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		"answers for", "today's answers", "answer key",
 	}
 
+	nonAlpha := regexp.MustCompile(`[^a-z0-9 ]+`)
+	seen := make(map[string]bool)
+
 	filtered := news.Articles[:0]
 	for _, a := range news.Articles {
 		if a.Title == "" || a.Title == "[Removed]" || a.URL == "" {
 			continue
 		}
 		lower := strings.ToLower(a.Title)
+
 		blocked := false
 		for _, term := range titleBlocklist {
 			if strings.Contains(lower, term) {
@@ -107,9 +112,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 		}
-		if !blocked {
-			filtered = append(filtered, a)
+		if blocked {
+			continue
 		}
+
+		// Deduplicate by normalized title (strips punctuation/whitespace variations)
+		key := strings.Join(strings.Fields(nonAlpha.ReplaceAllString(lower, "")), " ")
+		if seen[key] {
+			continue
+		}
+		seen[key] = true
+
+		filtered = append(filtered, a)
 	}
 	news.Articles = filtered
 	news.TotalResults = len(filtered)
