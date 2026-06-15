@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -87,9 +88,26 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	titleBlocklist := []string{
+		"connections", "wordle", "nyt puzzle", "spelling bee",
+		"crossword", "strands", "mini quiz", "trivia", "hints and answers",
+		"answers for", "today's answers", "answer key",
+	}
+
 	filtered := news.Articles[:0]
 	for _, a := range news.Articles {
-		if a.Title != "" && a.Title != "[Removed]" && a.URL != "" {
+		if a.Title == "" || a.Title == "[Removed]" || a.URL == "" {
+			continue
+		}
+		lower := strings.ToLower(a.Title)
+		blocked := false
+		for _, term := range titleBlocklist {
+			if strings.Contains(lower, term) {
+				blocked = true
+				break
+			}
+		}
+		if !blocked {
 			filtered = append(filtered, a)
 		}
 	}
